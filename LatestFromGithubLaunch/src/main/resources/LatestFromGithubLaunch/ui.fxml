@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="523.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="523.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LatestFromGithubLaunch.LatestFromGithubLaunchUI">
    <children>
       <GridPane layoutX="184.0" layoutY="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -65,14 +65,14 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label text="Previous Version" GridPane.rowIndex="1">
+                  <Label alignment="CENTER_RIGHT" text="Previous Version" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets left="20.0" />
+                        <Insets left="20.0" right="20.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label text="Current Version" GridPane.rowIndex="2">
+                  <Label alignment="CENTER_RIGHT" text="Current Version" GridPane.rowIndex="2">
                      <GridPane.margin>
-                        <Insets left="20.0" />
+                        <Insets left="20.0" right="20.0" />
                      </GridPane.margin>
                   </Label>
                   <Label fx:id="previousVersion" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
