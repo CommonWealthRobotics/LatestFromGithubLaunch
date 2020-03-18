@@ -13,6 +13,7 @@ public class Main  extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		LatestFromGithubLaunchUI.stage=stage;
 		Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
 
 		Scene scene = new Scene(root, 600, 523);
@@ -22,6 +23,7 @@ public class Main  extends Application {
 		stage.show();
 	}
 	public static void main(String [] args) {
+		LatestFromGithubLaunchUI.args=args;
 		launch(args);
 	}
 

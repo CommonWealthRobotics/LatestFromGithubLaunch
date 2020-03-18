@@ -39,12 +39,12 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onYes" text="Yes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Button fx:id="yesButton" mnemonicParsing="false" onAction="#onYes" text="Yes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onNo" text="No" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Button fx:id="noButton" mnemonicParsing="false" onAction="#onNo" text="No" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
@@ -81,6 +81,14 @@
                      </GridPane.margin>
                   </Label>
                   <Label fx:id="currentVersion" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="binary" text="Label" GridPane.columnIndex="1">
+                     <opaqueInsets>
+                        <Insets left="20.0" />
+                     </opaqueInsets>
                      <GridPane.margin>
                         <Insets left="20.0" />
                      </GridPane.margin>
