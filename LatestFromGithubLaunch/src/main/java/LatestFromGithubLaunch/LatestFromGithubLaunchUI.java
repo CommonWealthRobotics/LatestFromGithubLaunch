@@ -44,7 +44,7 @@ public class LatestFromGithubLaunchUI {
 	public static Stage stage;
 
 	public static String latestVersionString = "";
-	public static String myVersionString = "";
+	public static String myVersionString = "None";
 	public static long size = 0;
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
@@ -92,7 +92,7 @@ public class LatestFromGithubLaunchUI {
 		yesButton.setDisable(true);
 		noButton.setDisable(true);
 		new Thread(() -> {
-			
+
 			try {
 				URL url = new URL(downloadURL);
 				URLConnection connection = url.openConnection();
@@ -101,29 +101,28 @@ public class LatestFromGithubLaunchUI {
 				pis.addListener(new Listener() {
 					@Override
 					public void process(double percent) {
-						System.out.println("Percent done " + percent);
 						Platform.runLater(() -> {
 							progress.setProgress(percent);
 						});
 					}
 				});
-				File folder = new File(bindir + latestVersionString + "/" );
-				File exe = new File( bindir + latestVersionString + "/" + args[2]);
-				
-				if(!folder.exists()|| !exe.exists() || size!=exe.length()) {
+				File folder = new File(bindir + latestVersionString + "/");
+				File exe = new File(bindir + latestVersionString + "/" + args[2]);
+
+				if (!folder.exists() || !exe.exists() || size != exe.length()) {
 					folder.mkdirs();
 					exe.createNewFile();
 					byte dataBuffer[] = new byte[1024];
-				    int bytesRead;
-				    FileOutputStream fileOutputStream = new FileOutputStream(exe.getAbsoluteFile()) ;
-				    while ((bytesRead = pis.read(dataBuffer, 0, 1024)) != -1) {
-				        fileOutputStream.write(dataBuffer, 0, bytesRead);
-				    }
-				    fileOutputStream.close();
-				    pis.close();
-				    
+					int bytesRead;
+					FileOutputStream fileOutputStream = new FileOutputStream(exe.getAbsoluteFile());
+					while ((bytesRead = pis.read(dataBuffer, 0, 1024)) != -1) {
+						fileOutputStream.write(dataBuffer, 0, bytesRead);
+					}
+					fileOutputStream.close();
+					pis.close();
+
 				}
-				if(folder.exists()&& exe.exists()&&size!=exe.length())
+				if (folder.exists() && exe.exists() && size == exe.length())
 					myVersionString = latestVersionString;
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -135,6 +134,12 @@ public class LatestFromGithubLaunchUI {
 
 	public void launchApplication() {
 		Platform.runLater(() -> stage.close());
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		String command = args[3];
 		for (int i = 4; i < args.length; i++) {
 			command += " " + args[i];
@@ -155,9 +160,31 @@ public class LatestFromGithubLaunchUI {
 			e.printStackTrace();
 		}
 
-		command += " " + bindir + myVersionString + "/" + args[2];
-
-		System.out.println(command);
+		String finalCommand =command + " " + bindir + myVersionString + "/" + args[2];
+		
+		System.out.println(finalCommand);
+		new Thread(() -> {
+			try {
+				Process process = Runtime.getRuntime().exec(finalCommand);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+				String line;
+				while ((line = reader.readLine()) != null && process.isAlive()) {
+					System.out.println(line);
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				reader.close();
+				System.out.println("LatestFromGithubLaunch clean exit");
+				System.exit(0);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	private static String readAll(Reader rd) throws IOException {
@@ -209,7 +236,7 @@ public class LatestFromGithubLaunchUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		stage.setTitle("Auto-Updater for "+ args[1]);
+		stage.setTitle("Auto-Updater for " + args[1]);
 		currentVersion.setText(latestVersionString);
 		bindir = System.getProperty("user.home") + "/bin/" + args[1] + "Install/";
 		myVersionFileString = bindir + "currentversion.txt";
@@ -218,17 +245,21 @@ public class LatestFromGithubLaunchUI {
 		if (!bindirFile.exists())
 			bindirFile.mkdirs();
 		if (!myVersionFile.exists()) {
-			
+
 			onYes(null);
 		} else {
 			try {
-				myVersionString = new String(Files.readAllBytes(Paths.get(myVersionFileString)));
+				myVersionString = new String(Files.readAllBytes(Paths.get(myVersionFileString))).trim();
 				previousVersion.setText(myVersionString);
+				if (myVersionString.length() < 3) {
+					onYes(null);
+					return;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (myVersionString.contentEquals(latestVersionString))
 			launchApplication();
 
