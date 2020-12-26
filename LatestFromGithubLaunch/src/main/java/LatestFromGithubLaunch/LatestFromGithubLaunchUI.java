@@ -141,6 +141,7 @@ public class LatestFromGithubLaunchUI {
 			e1.printStackTrace();
 		}
 		String command = args[3];
+		
 		for (int i = 4; i < args.length; i++) {
 			command += " " + args[i];
 		}
@@ -160,9 +161,13 @@ public class LatestFromGithubLaunchUI {
 			e.printStackTrace();
 		}
 
-		String finalCommand =command + " " + bindir + myVersionString + "/" + args[2];
+		String fc =!isWin()?
+					command + " " + bindir + myVersionString + "/" + args[2]+"":
+						command + " \"" + bindir + myVersionString + "/" + args[2]+"\"";
+
 		
-		System.out.println(finalCommand);
+		String finalCommand=fc;
+		System.out.println("Running:\n\n"+finalCommand+"\n\n");
 		new Thread(() -> {
 			try {
 				Process process = Runtime.getRuntime().exec(finalCommand);
@@ -185,6 +190,10 @@ public class LatestFromGithubLaunchUI {
 				e.printStackTrace();
 			}
 		}).start();
+	}
+
+	private boolean isWin() {
+		return System.getProperty("os.name").toLowerCase().contains("windows");
 	}
 
 	private static String readAll(Reader rd) throws IOException {
