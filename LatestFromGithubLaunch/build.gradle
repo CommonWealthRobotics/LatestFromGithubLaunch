@@ -7,26 +7,28 @@
  */
 
 plugins {
-    // Apply the java-library plugin to add support for Java Library
-    id 'java-library'
+	// Apply the java-library plugin to add support for Java Library
+	id 'java-library'
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+	// Use jcenter for resolving dependencies.
+	// You can declare any Maven/Ivy/file repository here.
+	jcenter()
 }
 
 dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
+	// This dependency is exported to consumers, that is to say found on their compile classpath.
+	api 'org.apache.commons:commons-math3:3.6.1'
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:28.2-jre'
+	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
+	implementation 'com.google.guava:guava:28.2-jre'
 
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+	// Use JUnit test framework
+	testImplementation 'junit:junit:4.12'
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'org.rauschig:jarchivelib:0.7.1'
+	// https://mvnrepository.com/artifact/org.rauschig/jarchivelib
+	implementation group: 'org.rauschig', name: 'jarchivelib', version: '1.2.0'
+
 
 }

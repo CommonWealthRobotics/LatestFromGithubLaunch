@@ -106,26 +106,27 @@ public class JvmManager {
 		File archive = getArchive(jvmPackageURL, bindir);
 		String filename = archive.getName();
 		String archiveBase = "";
-		File destination = new File(bindir + "/java17/");
+		File destination = new File(bindir + "/java/");
+		location = destination.getAbsolutePath() + "/" + archiveBase + "/bin/java";
+
 		Archiver archiver = null;
 
 		System.out.println("Extracting JVM");
 		if (filename.endsWith(".tar.gz")) {
 			System.out.println("Tar file found");
-			if (!destination.exists())
+			if (!new File(location).exists())
 				archiver = ArchiverFactory.createArchiver("tar", "gz");
 			archiveBase = filename.split("\\.tar")[0];
 		}
 		if (filename.endsWith(".zip")) {
 			System.out.println("Zip file found ");
-			if (!destination.exists())
+			if (!new File(location).exists())
 				archiver = ArchiverFactory.createArchiver("zip");
 			archiveBase = filename.split("\\.zip")[0];
 		}
 		if (archiver != null)
 			archiver.extract(archive, destination);
 
-		location = destination.getAbsolutePath() + "/" + archiveBase + "/bin/java";
 		if(!new File(location).exists())
 			throw new RuntimeException("JVM not extracted properly");
 		System.out.println("Setting location of JVM to " + location);
