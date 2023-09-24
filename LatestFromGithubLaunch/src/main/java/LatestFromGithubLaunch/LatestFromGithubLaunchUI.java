@@ -40,7 +40,7 @@ import com.google.gson.reflect.TypeToken;
 public class LatestFromGithubLaunchUI {
 
 	public static String[] args;
-
+	private JvmManager manager =null;
 	public static Stage stage;
 
 	public static String latestVersionString = "";
@@ -107,7 +107,7 @@ public class LatestFromGithubLaunchUI {
 					}
 				});
 				File folder = new File(bindir + latestVersionString + "/");
-				File exe = new File(bindir + latestVersionString + "/" + args[2]);
+				File exe = new File(bindir + latestVersionString + "/" + getJarName());
 
 				if (!folder.exists() || !exe.exists() || size != exe.length()) {
 					folder.mkdirs();
@@ -132,6 +132,10 @@ public class LatestFromGithubLaunchUI {
 		}).start();
 	}
 
+	private static String getJarName() {
+		return args[2];
+	}
+
 	public void launchApplication() {
 		Platform.runLater(() -> stage.close());
 		try {
@@ -140,10 +144,10 @@ public class LatestFromGithubLaunchUI {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		String command = args[3];
+		String command = getJVMLocationOnDisk(myVersionString);
 		
 		for (int i = 4; i < args.length; i++) {
-			command += " " + args[i];
+			command += " " + args[i]+" ";
 		}
 		try {
 			myVersionFile.createNewFile();
@@ -162,8 +166,8 @@ public class LatestFromGithubLaunchUI {
 		}
 
 		String fc =!isWin()?
-					command + " " + bindir + myVersionString + "/" + args[2]+"":
-						command + " \"" + bindir + myVersionString + "/" + args[2]+"\"";
+					command + " " + bindir + myVersionString + "/" + getJarName()+"":
+						command + " \"" + bindir + myVersionString + "/" + getJarName()+"\"";
 
 		
 		String finalCommand=fc;
@@ -192,11 +196,26 @@ public class LatestFromGithubLaunchUI {
 		}).start();
 	}
 
+	private String getJVMLocationOnDisk(String version) {
+		String jvm = args[3];
+		if(jvm.toLowerCase().endsWith(".json")) {
+			if (manager==null)
+				try {
+					manager= new JvmManager(getGithubProject(),getGirhubRepo(),jvm,version,bindir);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			jvm = manager.getJVM();
+		}
+		return jvm;
+	}
+
 	private boolean isWin() {
 		return System.getProperty("os.name").toLowerCase().contains("windows");
 	}
 
-	private static String readAll(Reader rd) throws IOException {
+	static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
 		while ((cp = rd.read()) != -1) {
@@ -221,7 +240,7 @@ public class LatestFromGithubLaunchUI {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> assets = (List<Map<String, Object>>) database.get("assets");
 			for (Map<String, Object> key : assets) {
-				if (((String) key.get("name")).contentEquals(args[2])) {
+				if (((String) key.get("name")).contentEquals(getJarName())) {
 					downloadURL = (String) key.get("browser_download_url");
 					size = ((Double) key.get("size")).longValue();
 					System.out.println(downloadURL + " Size " + size + " bytes");
@@ -239,15 +258,15 @@ public class LatestFromGithubLaunchUI {
 		assert currentVersion != null : "fx:id=\"currentVersion\" was not injected: check your FXML file 'ui.fxml'.";
 
 		try {
-			readCurrentVersion("https://api.github.com/repos/" + args[0] + "/" + args[1] + "/releases/latest");
-			binary.setText(args[0] + "\n" + args[1] + "\n" + args[2] + "\n" + (size / 1000000) + " Mb");
+			readCurrentVersion("https://api.github.com/repos/" + getGithubProject() + "/" + getGirhubRepo() + "/releases/latest");
+			binary.setText(getGithubProject() + "\n" + getGirhubRepo() + "\n" + getJarName() + "\n" + (size / 1000000) + " Mb");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		stage.setTitle("Auto-Updater for " + args[1]);
+		stage.setTitle("Auto-Updater for " + getGirhubRepo());
 		currentVersion.setText(latestVersionString);
-		bindir = System.getProperty("user.home") + "/bin/" + args[1] + "Install/";
+		bindir = System.getProperty("user.home") + "/bin/" + getGirhubRepo() + "Install/";
 		myVersionFileString = bindir + "currentversion.txt";
 		myVersionFile = new File(myVersionFileString);
 		bindirFile = new File(bindir);
@@ -272,5 +291,13 @@ public class LatestFromGithubLaunchUI {
 		if (myVersionString.contentEquals(latestVersionString))
 			launchApplication();
 
+	}
+
+	private String getGirhubRepo() {
+		return args[1];
+	}
+
+	private String getGithubProject() {
+		return args[0];
 	}
 }
